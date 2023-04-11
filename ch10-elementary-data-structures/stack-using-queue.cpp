@@ -5,14 +5,14 @@ using namespace std;
 class Stack {
 	public:
 		void Push(int x);
-        int Pop();
+		int Pop();
 		int Top();
 	private:
 		queue<int> A, B;
 };
 
 void Stack::Push(int x) {
-    A.push(x);
+	A.push(x);
 }
 
 int Stack::Pop() {
@@ -53,7 +53,7 @@ int main() {
 	char op;
 	int num;
 
-    cout << "Use 'P' for push and 'p' for pop." << endl;
+	cout << "Use 'P' for push and 'p' for pop." << endl;
 	cout << "Choose an operation to perform (P/p/t): ";
 	while (cin >> op) {
 		if (op == 'P') {
@@ -74,7 +74,7 @@ int main() {
 			} catch (underflow_error e) {
 				cerr << e.what() << endl;
 			}
-        } else cout << "Invalid response." << endl;
+		} else cout << "Invalid response." << endl;
 		cout << "Choose an operation to perform (P/p/t): ";
 	}
 	cout << endl;

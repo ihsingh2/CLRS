@@ -19,7 +19,7 @@ class BinaryMaxHeap {
 };
 
 ostream &operator<<(ostream &os, const BinaryMaxHeap &H) { 
-    for (int i=1; i<=H.A[0]; i++) 
+	for (int i=1; i<=H.A[0]; i++) 
 		os << H.A[i] << " ";
 	return os;
 }
@@ -114,7 +114,7 @@ int main() {
 	char op;
 	int i, k;
 
-    cout << "Use 'i' for increase and 'I' for insert." << endl;
+	cout << "Use 'i' for increase and 'I' for insert." << endl;
 	cout << "Choose an operation to perform (i/I/M/P/S): ";
 	while (cin >> op) {
 		if (op == 'i') {
@@ -142,7 +142,7 @@ int main() {
 			cout << H;
 			if (H.size() > 0) 
 				cout << endl;
-        } else if (op == 'S') {
+		} else if (op == 'S') {
 			A = H.sort();
 			for (int x: A) cout << x << " ";
 			if (A.size()) cout << endl;

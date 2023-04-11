@@ -18,7 +18,7 @@ class YoungTableau {
 };
 
 ostream &operator<<(ostream &os, const YoungTableau &Y) { 
-    for (int i=0; i<Y.m; i++) {
+	for (int i=0; i<Y.m; i++) {
 		for (int j=0; j<Y.n; j++) {
 			if (Y.A[i][j] == INT_MAX)
 				os << ". ";
