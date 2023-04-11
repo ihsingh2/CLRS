@@ -180,6 +180,7 @@ void RedBlackTree<T>::insert_fixup(RedBlackTreeNode<T> *z) {
 	while (z->parent->color == RED) {
 		if (z->parent == z->parent->parent->left) {
 			RedBlackTreeNode<T> *y = z->parent->parent->right;
+			// case 1
 			if (y->color == RED) {
 				z->parent->color = BLACK;
 				y->color = BLACK;
@@ -187,10 +188,12 @@ void RedBlackTree<T>::insert_fixup(RedBlackTreeNode<T> *z) {
 				z = z->parent->parent;
 			}
 			else {
+				// case 2
 				if (z == z->parent->right) {
 					z = z->parent;
 					left_rotate(z);
 				}
+				// case 3
 				z->parent->color = BLACK;
 				z->parent->parent->color = RED;
 				right_rotate(z->parent->parent);
@@ -198,6 +201,7 @@ void RedBlackTree<T>::insert_fixup(RedBlackTreeNode<T> *z) {
 		}
 		else {
 			RedBlackTreeNode<T> *y = z->parent->parent->left;
+			// case 1
 			if (y->color == RED) {
 				z->parent->color = BLACK;
 				y->color = BLACK;
@@ -205,10 +209,12 @@ void RedBlackTree<T>::insert_fixup(RedBlackTreeNode<T> *z) {
 				z = z->parent->parent;
 			}
 			else {
+				// case 2
 				if (z == z->parent->left) {
 					z = z->parent;
 					right_rotate(z);
 				}
+				// case 3
 				z->parent->color = BLACK;
 				z->parent->parent->color = RED;
 				left_rotate(z->parent->parent);
@@ -256,23 +262,27 @@ void RedBlackTree<T>::delete_fixup(RedBlackTreeNode<T> *x) {
 	while (x != root && x->color == BLACK) {
 		if (x == x->parent->left) {
 			RedBlackTreeNode<T> *w = x->parent->right;
+			// case 1
 			if (w->color == RED) {
 				w->color = BLACK;
 				x->parent->color = RED;
 				left_rotate(x->parent);
 				w = x->parent->right;
 			}
+			// case 2
 			if (w->left->color == BLACK && w->right->color == BLACK) {
 				w->color = RED;
 				x = x->parent;
 			}
-			else { 
+			else {
+				// case 3
 				if (w->right->color == BLACK) {
 					w->left->color = BLACK;
 					w->color = RED;
 					right_rotate(w);
 					w = x->parent->right;
 				}
+				// case 4
 				w->color = x->parent->color;
 				x->parent->color = BLACK;
 				w->right->color = BLACK;
@@ -282,23 +292,27 @@ void RedBlackTree<T>::delete_fixup(RedBlackTreeNode<T> *x) {
 		}
 		else {
 			RedBlackTreeNode<T> *w = x->parent->left;
+			// case 1
 			if (w->color == RED) {
 				w->color = BLACK;
 				x->parent->color = RED;
 				right_rotate(x->parent);
 				w = x->parent->left;
 			}
+			// case 2
 			if (w->right->color == BLACK && w->left->color == BLACK) {
 				w->color = RED;
 				x = x->parent;
 			}
-			else { 
+			else {
+				// case 3
 				if (w->left->color == BLACK) {
 					w->right->color = BLACK;
 					w->color = RED;
 					left_rotate(w);
 					w = x->parent->left;
 				}
+				// case 4
 				w->color = x->parent->color;
 				x->parent->color = BLACK;
 				w->left->color = BLACK;

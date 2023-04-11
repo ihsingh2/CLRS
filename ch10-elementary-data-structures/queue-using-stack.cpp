@@ -43,8 +43,7 @@ int main() {
 			try {
 				num = q.Dequeue();
 				cout << "Dequeued " << num << "." << endl;
-			}
-			catch (underflow_error e) {
+			} catch (underflow_error e) {
 				cerr << e.what() << endl;
 			}
 		} else cout << "Invalid response." << endl;

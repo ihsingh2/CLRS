@@ -9,7 +9,6 @@ class List {
 		void Insert(int x);
 		void Delete(int x);
 		void Compactify();
-
 	private:
 		int A[SIZE*3]; 	// single array representation: prev, key, next - in that order.
 		int NIL;

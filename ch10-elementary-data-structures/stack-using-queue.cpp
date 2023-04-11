@@ -64,16 +64,14 @@ int main() {
 			try {
 				num = s.Pop();
 				cout << "Popped " << num << "." << endl;
-			}
-			catch (underflow_error e) {
+			} catch (underflow_error e) {
 				cerr << e.what() << endl;
 			}
 		} else if (op == 't') {
 			try {
 				num = s.Top();
 				cout << "Top element is " << num << "." << endl;
-			}
-			catch (underflow_error e) {
+			} catch (underflow_error e) {
 				cerr << e.what() << endl;
 			}
         } else cout << "Invalid response." << endl;
