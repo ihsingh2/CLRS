@@ -4,11 +4,10 @@ using namespace std;
 
 int main() {
 	int i, n, max, min, cmax, cmin;
-	cout << "Enter the number of elements: ";
+	cout << "Number of Elements: ";
 	cin >> n;
-	vector<int> A;
-	A.reserve(n);
-	cout << "Enter the set of elements: ";
+	vector<int> A(n);
+	cout << "Elements: ";
 	for (i = 0; i < n; i++) cin >> A[i];
 
 	if (n == 1) {

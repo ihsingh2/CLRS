@@ -22,14 +22,13 @@ int randpartition(vector<int>& A, int p, int r) {
 
 int main() {
 	int n, i, q, k;
-	cout << "Enter the number of elements: ";
+	cout << "Number of Elements: ";
 	cin >> n;
-	vector<int> A;
-	A.reserve(n);
+	vector<int> A(n);
 	int p = 0, r = n-1;
-	cout << "Enter the set of elements: ";
+	cout << "Elements: ";
 	for (i = 0; i < n; i++) cin >> A[i];
-	cout << "Enter the order statistic to find: ";
+	cout << "Order Statistic: ";
 	cin >> i;
 
 	while (true) {

@@ -1,23 +1,24 @@
 #include <iostream>
+#include <climits>
 #include <queue>
 using namespace std;
 
 struct Node {
-	int32_t v;
+	int v;
 	Node *l = nullptr;
 	Node *r = nullptr;
 };
 
 int main() {
-	int32_t n, smin = INT32_MAX;
+	int n, smin = INT_MAX;
 
-	cout << "Enter the number of elements: ";
+	cout << "Number of Elements: ";
 	cin >> n;
 	if (n < 2) return 0;
 
 	queue<Node*> q;
 	Node *root;
-	cout << "Enter the set of elements: ";
+	cout << "Elements: ";
 	for (int i = 0; i < n; i++) {
 		root = new Node();
 		cin >> root->v;

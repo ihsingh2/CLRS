@@ -53,13 +53,12 @@ int select(vector<int> &A, int p, int q, int i) {
 
 int main() {
 	int n, i, k;
-	cout << "Enter the number of elements: ";
+	cout << "Number of Elements: ";
 	cin >> n;
-	vector<int> A;
-	A.reserve(n);
-	cout << "Enter the set of elements: ";
+	vector<int> A(n);
+	cout << "Elements: ";
 	for (i = 0; i < n; i++) cin >> A[i];
-	cout << "Enter the order statistic to find: ";
+	cout << "Order Statistic: ";
 	cin >> i;
 
 	cout << select(A, 0, n-1, i) << endl;
