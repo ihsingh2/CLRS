@@ -4,7 +4,7 @@
 using namespace std;
 
 class MaxHeap {
-	friend ostream &operator<<(ostream &os, const MaxHeap &H);
+	friend ostream& operator<<(ostream& out, const MaxHeap& H);
 	public:
 		MaxHeap(vector<int> B, int deg);
 		int size();
@@ -20,10 +20,10 @@ class MaxHeap {
 		void build_max_heap();
 };
 
-ostream &operator<<(ostream &os, const MaxHeap &H) { 
-	for (int i=0; i<H.s; i++) 
-		os << H.A[i] << " ";
-	return os;
+ostream& operator<<(ostream& out, const MaxHeap& H) { 
+	for (int i = 0; i < H.s; i++) 
+		out << H.A[i] << " ";
+	return out;
 }
 
 MaxHeap::MaxHeap(vector<int> B, int deg) {
@@ -31,7 +31,8 @@ MaxHeap::MaxHeap(vector<int> B, int deg) {
 	s = B.size();
 	if (B.size()) {
 		A.reserve(B.size());
-		for (int x: B) A.push_back(x);
+		for (int x: B)
+			A.push_back(x);
 		build_max_heap();
 	}
 }
@@ -52,7 +53,7 @@ void MaxHeap::heapify(int i) {
 }
 
 void MaxHeap::build_max_heap() {
-	for (int i=(s-2)/d; i>=0; i--)
+	for (int i = (s-2)/d; i >= 0; i--)
 		heapify(i);
 }
 
@@ -63,7 +64,7 @@ int MaxHeap::size() {
 vector<int> MaxHeap::sort() {
 	vector<int> B = A;
 	int n = s;
-	for (int i=n-1; i>0; i--) {
+	for (int i = n-1; i > 0; i--) {
 		swap(A[0], A[i]);
 		s--;
 		heapify(0);
@@ -110,7 +111,7 @@ int main() {
 	cin >> n;
 	vector<int> A(n);
 	cout << "Elements: ";
-	for (int i=0; i<n; i++) 
+	for (int i = 0; i < n; i++)
 		cin >> A[i];
 	if (n < 1) 
 		cout << endl;

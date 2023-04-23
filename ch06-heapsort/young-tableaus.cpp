@@ -4,7 +4,7 @@
 using namespace std;
 
 class YoungTableau {
-	friend ostream &operator<<(ostream &os, const YoungTableau &Y);
+	friend ostream& operator<<(ostream& out, const YoungTableau& Y);
 	public:
 		YoungTableau(int r, int c);
 		int extract_min();
@@ -17,17 +17,17 @@ class YoungTableau {
 		int n;
 };
 
-ostream &operator<<(ostream &os, const YoungTableau &Y) { 
-	for (int i=0; i<Y.m; i++) {
-		for (int j=0; j<Y.n; j++) {
+ostream& operator<<(ostream& out, const YoungTableau& Y) { 
+	for (int i = 0; i < Y.m; i++) {
+		for (int j = 0; j < Y.n; j++) {
 			if (Y.A[i][j] == INT_MAX)
-				os << ". ";
+				out << ". ";
 			else
-				os << Y.A[i][j] << " ";
+				out << Y.A[i][j] << " ";
 		}
-		cout << endl;
+		out << endl;
 	}
-	return os;
+	return out;
 }
 
 YoungTableau::YoungTableau(int r, int c) {

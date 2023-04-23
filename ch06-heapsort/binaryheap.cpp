@@ -4,7 +4,7 @@
 using namespace std;
 
 class BinaryMaxHeap {
-	friend ostream &operator<<(ostream &os, const BinaryMaxHeap &H);
+	friend ostream& operator<<(ostream& out, const BinaryMaxHeap& H);
 	public:
 		BinaryMaxHeap(vector<int> B);
 		int size();
@@ -18,17 +18,18 @@ class BinaryMaxHeap {
 		void build_max_heap();
 };
 
-ostream &operator<<(ostream &os, const BinaryMaxHeap &H) { 
-	for (int i=1; i<=H.A[0]; i++) 
-		os << H.A[i] << " ";
-	return os;
+ostream& operator<<(ostream& out, const BinaryMaxHeap& H) { 
+	for (int i = 1; i <= H.A[0]; i++) 
+		out << H.A[i] << " ";
+	return out;
 }
 
 BinaryMaxHeap::BinaryMaxHeap(vector<int> B) {
 	if (B.size()) {
 		A.push_back(B.size());
 		A.reserve(B.size() + 1);
-		for (int x: B) A.push_back(x);
+		for (int x: B) 
+			A.push_back(x);
 		build_max_heap();
 	}
 	else A.push_back(0);
@@ -49,7 +50,7 @@ void BinaryMaxHeap::heapify(int i) {
 }
 
 void BinaryMaxHeap::build_max_heap() {
-	for (int i=A[0]>>1; i>0; i--)
+	for (int i = A[0] >> 1; i > 0; i--)
 		heapify(i);
 }
 
@@ -60,7 +61,7 @@ int BinaryMaxHeap::size() {
 vector<int> BinaryMaxHeap::sort() {
 	vector<int> B = A;
 	int n = A[0];
-	for (int i=n; i>1; i--) {
+	for (int i = n; i > 1; i--) {
 		swap(A[1], A[i]);
 		A[0]--;
 		heapify(1);
@@ -107,7 +108,7 @@ int main() {
 	cin >> n;
 	vector<int> A(n);
 	cout << "Elements: ";
-	for (int i=0; i<n; i++) 
+	for (int i = 0; i < n; i++) 
 		cin >> A[i];
 	BinaryMaxHeap H(A);
 

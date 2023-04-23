@@ -1,7 +1,6 @@
 #include <iostream>
 using namespace std;
 
-// although we need only a bit, we instead go with the word length better aligned with the processor
 static const int RED = 0;
 static const int BLACK = 1;
 
