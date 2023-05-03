@@ -15,6 +15,7 @@ class Graph {
 		Graph(int n);
 		void bfs(int s);
 		void dfs();
+		void dfs_edges();
 		void tsort_dfs();
 		void tsort_kahn();
 		int count_simple_paths(int s, int t);
@@ -22,10 +23,15 @@ class Graph {
 		void ssc_tarjan();
 		void euler_tour();
 		void reachability();
+		void transpose();
+		void simplify();
+		void square();
+		int universal_sink();
 	private:
 		vector<list<int>> A;
 		vector<int> indeg;
 		pair<int, int> temp;
+		void dfs_edges_child(vector<int>& visited, vector<int>& disc, vector<int>& pred, int& time, int u);
 		void strong_connect(int v, int& id, stack<int>& S, vector<int>& index, vector<int>& lowlink, vector<int>& onstack);
 		void radix_sort(vector<pair<int,int>>& A, int d);
 };
@@ -56,15 +62,10 @@ ostream& operator<<(ostream& out, const Graph& G) {
 }
 
 void Graph::bfs(int s) {
-	vector<int> visited(A.size());
-	vector<int> distance(A.size());
-	vector<int> pred(A.size());
+	vector<int> visited(A.size(), 0);
+	vector<int> distance(A.size(), INT_MAX);
+	vector<int> pred(A.size(), -1);
 	queue<int> Q;
-	for (int i = 0; i < A.size(); i++) {
-		visited[i] = 0;
-		distance[i] = INT_MAX;
-		pred[i] = -1;
-	}
 
 	distance[s] = 0;
 	Q.push(s);
@@ -99,16 +100,12 @@ void Graph::bfs(int s) {
 }
 
 void Graph::dfs() {
-	vector<int> visited(A.size());
+	vector<int> visited(A.size(), 0);
 	vector<int> disc(A.size());
 	vector<int> finished(A.size());
-	vector<int> pred(A.size());
+	vector<int> pred(A.size(), -1);
 	stack<int> S;
 	int time = 0;
-	for (int i = 0; i < A.size(); i++) {
-		visited[i] = 0;
-		pred[i] = -1;
-	}
 
 	for (int i = 0; i < A.size(); i++) {
 		if (visited[i] == 0) {
@@ -148,6 +145,41 @@ void Graph::dfs() {
 			cout << pred[i] << " ";
 	}
 	cout << endl;
+}
+
+void Graph::dfs_edges() {
+	vector<int> visited(A.size(), 0);
+	vector<int> disc(A.size());
+	vector<int> pred(A.size(), -1);
+	int time = 0;
+
+	for (int i = 0; i < A.size(); i++) {
+		if (visited[i] == 0) {
+			disc[i] = ++time;
+			visited[i] = 1;
+			dfs_edges_child(visited, disc, pred, time, i);
+		}
+	}
+}
+
+void Graph::dfs_edges_child(vector<int>& visited, vector<int>& disc, vector<int>& pred, int& time, int u) {
+	time++;	
+	for (auto v: A[u]) {
+		if (visited[v] == 0) {
+			cout << "TREE EDGE: (" << u << "," << v << ")" << endl;
+			visited[v] = 1;
+			disc[v] = time;
+			pred[v] = u;
+			dfs_edges_child(visited, disc, pred, time, v);
+		}
+		else if (visited[v] == 1)
+			cout << "BACK EDGE: (" << u << "," << v << ")" << endl;
+		else if (disc[v] > disc[u])
+			cout << "FORWARD EDGE: (" << u << "," << v << ")" << endl;
+		else
+			cout << "CROSS EDGE: (" << u << "," << v << ")" << endl;
+	}
+	visited[u] = 2;
 }
 
 void Graph::tsort_dfs() {
@@ -450,6 +482,63 @@ void Graph::radix_sort(vector<pair<int,int>>& A, int d) {
 			A[i] = B[i];
 }
 
+void Graph::transpose() {
+	vector<list<int>> T(A.size());
+	for (int i = 0; i < A.size(); i++) {
+		indeg[i] = A[i].size();
+		for (auto j: A[i])
+			T[j].push_back(i);
+	}
+	A = T;
+}
+
+void Graph::simplify() {
+	vector<list<int>> S(A.size());
+	vector<int> visited(A.size(), -1);
+	fill(indeg.begin(), indeg.end(), 0);
+	for (int i = 0; i < A.size(); i++) {
+		for (auto j: A[i]) {
+			if (visited[j] != i && j != i) {
+				visited[j] = i;
+				S[i].push_back(j);
+				indeg[j]++;
+			}
+		}
+	}
+	A = S;
+}
+
+void Graph::square() {
+	vector<list<int>> S(A.size());
+	vector<int> visited(A.size(), -1);
+	fill(indeg.begin(), indeg.end(), 0);
+	for (int i = 0; i < A.size(); i++) {
+		for (auto j: A[i]) {
+			if (visited[j] == i)
+				continue;
+			visited[j] = i;
+			S[i].push_back(j);
+			indeg[j]++;
+			for (auto k: A[j]) {
+				if (visited[k] != i) {
+					visited[k] = i;
+					S[i].push_back(k);
+					indeg[k]++;
+				}
+			}
+		}
+	}
+	A = S;
+}
+
+int Graph::universal_sink() {
+	for (int i = 0; i < A.size(); i++) {
+		if (indeg[i] == A.size() - 1 && A[i].size() == 0)
+			return i;
+	}
+	return -1;
+}
+
 int main() {
 	int m, n;
 	char op;
@@ -461,7 +550,7 @@ int main() {
 	cin.clear();
 	clearerr(stdin);
 
-	cout << "Choose an operation (b/c/d/e/k/K/r/t/T)): ";
+	cout << "Choose an operation (b/c/d/D/e/k/K/n/p/r/s/S/t/T/u): ";
 	while (cin >> op) {		
 		if (op == 'b') {
 			cout << "Source: ";
@@ -473,20 +562,34 @@ int main() {
 			cout << G.count_simple_paths(m, n) << endl;
 		} else if (op == 'd') {
 			G.dfs();
+		} else if (op == 'D') {
+			G.dfs_edges();
 		} else if (op == 'e') {
 			G.euler_tour();
 		} else if (op == 'k') {
 			G.tsort_kahn();
 		} else if (op == 'K') {
 			G.ssc_kosaraju();
+		} else if (op == 'n') {
+			G.transpose();
+		} else if (op == 'p') {
+			cout << G;
 		} else if (op == 'r') {
 			G.reachability();
+		} else if (op == 's') {
+			G.simplify();
+		} else if (op == 'S') {
+			G.square();
 		} else if (op == 't') {
 			G.tsort_dfs();
 		} else if (op == 'T') {
 			G.ssc_tarjan();
+		} else if (op == 'u') {
+			m = G.universal_sink();
+			if (m != -1)
+				cout << m << endl;
 		} else cout << "Invalid response." << endl;
-		cout << "Choose an operation (b/c/d/e/k/K/r/t/T): ";
+		cout << "Choose an operation (b/c/d/D/e/k/K/n/p/r/s/S/t/T/u): ";
 	}
 	cout << endl;
 
