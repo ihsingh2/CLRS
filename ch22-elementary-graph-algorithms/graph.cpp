@@ -30,7 +30,6 @@ class Graph {
 	private:
 		vector<list<int>> A;
 		vector<int> indeg;
-		pair<int, int> temp;
 		void dfs_edges_child(vector<int>& visited, vector<int>& disc, vector<int>& pred, int& time, int u);
 		void strong_connect(int v, int& id, stack<int>& S, vector<int>& index, vector<int>& lowlink, vector<int>& onstack);
 		void radix_sort(vector<pair<int,int>>& A, int d);
@@ -42,11 +41,12 @@ Graph::Graph(int n) {
 }
 
 istream& operator>>(istream& in, Graph& G) {
-	in >> G.temp.first >> G.temp.second;
+	pair<int,int> temp;
+	in >> temp.first >> temp.second;
 	if (!in) return in;
-	if (0 <= G.temp.first && G.temp.first < G.A.size() && 0 <= G.temp.second && G.temp.second <= G.A.size()) {
-		G.A[G.temp.first].push_back(G.temp.second);
-		G.indeg[G.temp.second]++;
+	if (0 <= temp.first && temp.first < G.A.size() && 0 <= temp.second && temp.second < G.A.size()) {
+		G.A[temp.first].push_back(temp.second);
+		G.indeg[temp.second]++;
 	}
 	return in;
 }
@@ -477,7 +477,7 @@ void Graph::radix_sort(vector<pair<int,int>>& A, int d) {
 		}
 	}
 
-	if (d%2)
+	if (d % 2)
 		for (i = 0; i < n; i++)
 			A[i] = B[i];
 }

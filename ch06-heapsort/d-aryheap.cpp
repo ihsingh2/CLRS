@@ -27,20 +27,16 @@ ostream& operator<<(ostream& out, const MaxHeap& H) {
 }
 
 MaxHeap::MaxHeap(vector<int> B, int deg) {
+	A = B;
 	d = deg;
 	s = B.size();
-	if (B.size()) {
-		A.reserve(B.size());
-		for (int x: B)
-			A.push_back(x);
-		build_max_heap();
-	}
+	build_max_heap();
 }
 
 void MaxHeap::heapify(int i) {
 	int l = d*i + 1;
 	int m = i;
-	for (int j=l; j<l+d; j++) {
+	for (int j = l; j < l+d; j++) {
 		if (j >= s) 
 			break;
 		if (A[j] > A[m])
@@ -78,10 +74,10 @@ vector<int> MaxHeap::sort() {
 int MaxHeap::extract_max() {
 	if (s < 1)
 		__throw_underflow_error("The heap is empty.");
-	int max = A[1];
-	A[1] = A[s-1];
-	s--;
-	heapify(1);
+	int max = A[0];
+	A[0] = A[--s];
+	A.pop_back();
+	heapify(0);
 	return max;
 }
 
@@ -93,7 +89,7 @@ void MaxHeap::increase_key(int i, int k) {
 	if (k < A[i])
 		__throw_logic_error("New key is smaller than the current key.");
 	A[i] = k;
-	while (i>0 && A[i] > A[(i-1)/d]) {
+	while (i > 0 && A[i] > A[(i-1)/d]) {
 		swap(A[i], A[(i-1)/d]);
 		i = (i-1)/d;
 	}
@@ -101,8 +97,7 @@ void MaxHeap::increase_key(int i, int k) {
 
 void MaxHeap::insert(int k) {
 	A.push_back(INT_MIN);
-	increase_key(s, k);
-	s++;
+	increase_key(s++, k);
 }
 
 int main() {
@@ -113,7 +108,7 @@ int main() {
 	cout << "Elements: ";
 	for (int i = 0; i < n; i++)
 		cin >> A[i];
-	if (n < 1) 
+	if (n < 1)
 		cout << endl;
 	cout << "Degree: ";
 	cin >> d;
@@ -152,8 +147,10 @@ int main() {
 				cout << endl;
 		} else if (op == 'S') {
 			A = H.sort();
-			for (int x: A) cout << x << " ";
-			if (A.size()) cout << endl;
+			for (int x: A) 
+				cout << x << " ";
+			if (A.size()) 
+				cout << endl;
 		} else cout << "Invalid response." << endl;
 		cout << "Choose an operation to perform (i/I/M/P/S): ";
 	}

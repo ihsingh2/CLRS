@@ -36,8 +36,8 @@ BinaryMaxHeap::BinaryMaxHeap(vector<int> B) {
 }
 
 void BinaryMaxHeap::heapify(int i) {
-	int l = i<<1;
-	int r = (i<<1) + 1;
+	int l = i << 1;
+	int r = (i << 1) + 1;
 	int m = i;
 	if (l <= A[0] && A[l] > A[i])
 		m = l;
@@ -76,8 +76,8 @@ int BinaryMaxHeap::extract_max() {
 	if (A[0] < 1)
 		__throw_underflow_error("The heap is empty.");
 	int max = A[1];
-	A[1] = A[A[0]];
-	A[0]--;
+	A[1] = A[A[0]--];
+	A.pop_back();
 	heapify(1);
 	return max;
 }
@@ -85,21 +85,20 @@ int BinaryMaxHeap::extract_max() {
 void BinaryMaxHeap::increase_key(int i, int k) {
 	if (i > A[0])
 		__throw_out_of_range("Index exceeded the size of heap.");
-	if (i < 0)
+	if (i <= 0)
 		__throw_out_of_range("Invalid input.");
 	if (k < A[i])
 		__throw_logic_error("New key is smaller than the current key.");
 	A[i] = k;
-	while (i>1 && A[i] > A[i>>1]) {
-		swap(A[i], A[i>>1]);
-		i = i>>1;
+	while (i > 1 && A[i] > A[i >> 1]) {
+		swap(A[i], A[i >> 1]);
+		i = i >> 1;
 	}
 }
 
 void BinaryMaxHeap::insert(int k) {
-	A[0]++;
 	A.push_back(INT_MIN);
-	increase_key(A[0], k);
+	increase_key(++A[0], k);
 }
 
 int main() {
