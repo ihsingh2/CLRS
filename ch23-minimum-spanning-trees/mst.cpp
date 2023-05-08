@@ -118,7 +118,7 @@ pair<int,int> MinHeap::pop() {
 
 void MinHeap::decrease_key(int i, int k) {
 	if (k >= A[i].first)
-		__throw_logic_error("New key is larger than the current key.");
+		__throw_logic_error("New key should be smaller than the current key.");
 	A[i].first = k;
 	while (i > 0 && A[i].first < A[(i - 1) >> 1].first) {
 		swap(L[A[i].second], L[A[(i - 1) >> 1].second]);
@@ -131,7 +131,7 @@ void MinHeap::update(int u, int k) {
 	if (u >= L.size())
 		__throw_out_of_range("Argument out of range.");
 	if (L[u] == -1)
-		__throw_invalid_argument("Element not in heap.");
+		__throw_invalid_argument("Value not in heap.");
 	decrease_key(L[u], k);
 }
 
