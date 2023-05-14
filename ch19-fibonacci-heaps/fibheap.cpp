@@ -1,53 +1,7 @@
-#include <iostream>
-#include <climits>
 #include <cmath>
+#include <climits>
 #include <vector>
-#include <unordered_map>
-using namespace std;
-
-class FibHeapNode {
-	public:
-		FibHeapNode(int k, int v) {
-			key = k;
-			value = v;
-			degree = 0;
-			mark = 0;
-			parent = nullptr;
-			child = nullptr;
-			left = this;
-			right = this;
-		}
-		int key;
-		int value;
-		int degree;
-		int mark;
-		FibHeapNode *parent;
-		FibHeapNode *child;
-		FibHeapNode *left;
-		FibHeapNode *right;
-};
-
-class FibHeap {
-	friend ostream& operator<<(ostream& out, const FibHeap& H);
-	public:
-		FibHeap();
-		int size();
-		void insert(int k, int v);
-		pair<int,int> minimum();
-		pair<int,int> extract_min();
-		void update(int v, int k);
-		void remove(int v);
-	private:
-		int n;
-		double log2_gr;
-		FibHeapNode *min;
-		unordered_map<int,FibHeapNode*> M;
-		void add_to_root_list(FibHeapNode *x);
-		void consolidate();
-		void link(FibHeapNode *y, FibHeapNode *x);
-		void cut(FibHeapNode *x, FibHeapNode *y);
-		void cascading_cut(FibHeapNode *y);
-};
+#include "fibheap.h"
 
 ostream& operator<<(ostream& out, const FibHeap& H) {
 	FibHeapNode *x = H.min;
@@ -85,6 +39,12 @@ void FibHeap::add_to_root_list(FibHeapNode *x) {
 		if (x->key < min->key)
 			min = x;
 	}
+}
+
+int FibHeap::peek(int v) {
+	if (M.find(v) == M.end())
+		__throw_invalid_argument("Value not in heap.");
+	return M.at(v)->key;
 }
 
 void FibHeap::insert(int k, int v) {
@@ -177,7 +137,7 @@ void FibHeap::link(FibHeapNode *y, FibHeapNode *x) {
 	}
 }
 
-void FibHeap::update(int v, int k) {
+void FibHeap::update(int k, int v) {
 	if (M.find(v) == M.end())
 		__throw_invalid_argument("Value not in heap.");
 	FibHeapNode *x = M.at(v);
@@ -186,10 +146,14 @@ void FibHeap::update(int v, int k) {
 
 	x->key = k;
 	FibHeapNode *y = x->parent;
-	if (y != nullptr && x->key < y->key) {
-		cut(x, y);
-		cascading_cut(y);
+	if (y != nullptr) {
+		if (x->key < y->key) {
+			cut(x, y);
+			cascading_cut(y);
+		}
 	}
+	else if (x->key < min->key)
+		min = x;
 }
 
 void FibHeap::cut(FibHeapNode *x, FibHeapNode *y) {
@@ -220,58 +184,4 @@ void FibHeap::cascading_cut(FibHeapNode *y) {
 void FibHeap::remove(int v) {
 	update(v, INT_MIN);
 	extract_min();
-}
-
-int main() {
-	char op;
-	FibHeap H;
-	pair<int,int> k;
-	
-	cout << "Choose an operation to perform (e/i/m/p/r/s/u): ";
-	while (cin >> op) {
-		if (op == 'e') {
-			try {
-				k = H.extract_min();
-				cout << "(" << k.first << "," << k.second << ")" << endl;
-			} catch (underflow_error e) {
-				cout << e.what() << endl;
-			}
-		} else if (op == 'i') {
-			cout << "Element: ";
-			cin >> k.first;
-			H.insert(k.first, k.first);
-		} else if (op == 'm') {
-			try {
-				k = H.minimum();
-				cout << "(" << k.first << "," << k.second << ")" << endl;
-			} catch (underflow_error e) {
-				cout << e.what() << endl;
-			}
-		} else if (op == 'p') {
-			cout << H;
-		} else if (op == 'r') {
-			cout << "Element: ";
-			cin >> k.first;
-			try {
-				H.remove(k.first);
-			} catch (logic_error e) {
-				cerr << e.what() << endl;
-			}
-		} else if (op == 's') {
-			k.first = H.size();
-			cout << k.first << endl;
-		} else if (op == 'u') {
-			cout << "Element: ";
-			cin >> k.first >> k.second;
-			try {
-				H.update(k.second, k.first);
-			} catch (logic_error e) {
-				cout << e.what() << endl;
-			}
-		} else cout << "Invalid response." << endl;
-		cout << "Choose an operation to perform (e/i/m/p/r/s/u): ";
-	}
-	cout << endl;
-
-	return 0;
 }

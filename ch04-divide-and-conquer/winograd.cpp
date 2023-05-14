@@ -88,7 +88,7 @@ int main() {
 	winograd(C, A, B, 0, 0, 0, 0, 0, 0, d);
 	size_t collen[d2.second];
 	for (int j = 0; j < d2.second; j++) {
-		size_t maxlen;
+		size_t maxlen = 0;
 		for (int i = 0; i < d1.first; i++)
 			maxlen = max(maxlen, len(C[i][j]));
 		collen[j] = maxlen;

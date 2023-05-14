@@ -1,46 +1,14 @@
-#include <iostream>
-#include <algorithm>
-#include <climits>
-#include <cmath>
-#include <vector>
-#include <stack>
 #include <queue>
-#include <list>
-using namespace std;
+#include <cmath>
+#include <climits>
+#include "directedgraph.h"
 
-class Graph {
-	friend istream& operator>>(istream& os, Graph& G);
-	friend ostream& operator<<(ostream& os, const Graph& G);
-	public:
-		Graph(int n);
-		void bfs(int s);
-		void dfs();
-		void dfs_edges();
-		void tsort_dfs();
-		void tsort_kahn();
-		int count_simple_paths(int s, int t);
-		void ssc_kosaraju();
-		void ssc_tarjan();
-		void euler_tour();
-		void reachability();
-		void transpose();
-		void simplify();
-		void square();
-		int universal_sink();
-	private:
-		vector<list<int>> A;
-		vector<int> indeg;
-		void dfs_edges_child(vector<int>& visited, vector<int>& disc, vector<int>& pred, int& time, int u);
-		void strong_connect(int v, int& id, stack<int>& S, vector<int>& index, vector<int>& lowlink, vector<int>& onstack);
-		void radix_sort(vector<pair<int,int>>& A, int d);
-};
-
-Graph::Graph(int n) {
+DirectedGraph::DirectedGraph(int n) {
 	A.resize(n);
 	indeg.resize(n, 0);
 }
 
-istream& operator>>(istream& in, Graph& G) {
+istream& operator>>(istream& in, DirectedGraph& G) {
 	pair<int,int> temp;
 	in >> temp.first >> temp.second;
 	if (!in) return in;
@@ -51,7 +19,7 @@ istream& operator>>(istream& in, Graph& G) {
 	return in;
 }
 
-ostream& operator<<(ostream& out, const Graph& G) {
+ostream& operator<<(ostream& out, const DirectedGraph& G) {
 	for (int i = 0; i < G.A.size(); i++) {
 		out << i << ": ";
 		for (auto v: G.A[i])
@@ -61,7 +29,7 @@ ostream& operator<<(ostream& out, const Graph& G) {
 	return out;
 }
 
-void Graph::bfs(int s) {
+void DirectedGraph::bfs(int s) {
 	vector<int> visited(A.size(), 0);
 	vector<int> distance(A.size(), INT_MAX);
 	vector<int> pred(A.size(), -1);
@@ -99,7 +67,7 @@ void Graph::bfs(int s) {
 	cout << endl;
 }
 
-void Graph::dfs() {
+void DirectedGraph::dfs() {
 	vector<int> visited(A.size(), 0);
 	vector<int> disc(A.size());
 	vector<int> finished(A.size());
@@ -147,7 +115,7 @@ void Graph::dfs() {
 	cout << endl;
 }
 
-void Graph::dfs_edges() {
+void DirectedGraph::dfs_edges() {
 	vector<int> visited(A.size(), 0);
 	vector<int> disc(A.size());
 	vector<int> pred(A.size(), -1);
@@ -162,7 +130,7 @@ void Graph::dfs_edges() {
 	}
 }
 
-void Graph::dfs_edges_child(vector<int>& visited, vector<int>& disc, vector<int>& pred, int& time, int u) {
+void DirectedGraph::dfs_edges_child(vector<int>& visited, vector<int>& disc, vector<int>& pred, int& time, int u) {
 	time++;	
 	for (auto v: A[u]) {
 		if (visited[v] == 0) {
@@ -182,12 +150,10 @@ void Graph::dfs_edges_child(vector<int>& visited, vector<int>& disc, vector<int>
 	visited[u] = 2;
 }
 
-void Graph::tsort_dfs() {
-	vector<int> visited(A.size());
+void DirectedGraph::tsort_dfs() {
+	vector<int> visited(A.size(), 0);
 	list<int> sorted;
 	stack<int> S;
-	for (int i = 0; i < A.size(); i++)
-		visited[i] = 0;
 
 	for (int i = 0; i < A.size(); i++) {
 		if (visited[i] == 0) {
@@ -220,7 +186,7 @@ void Graph::tsort_dfs() {
 	cout << endl;
 }
 
-void Graph::tsort_kahn() {
+void DirectedGraph::tsort_kahn() {
 	vector<int> B = indeg;
 	queue<int> Q;
 	vector<int> sorted;
@@ -228,6 +194,7 @@ void Graph::tsort_kahn() {
 	for (int i = 0; i < indeg.size(); i++)
 		if (indeg[i] == 0)
 			Q.push(i);
+
 	while (!Q.empty()) {
 		int u = Q.front();
 		Q.pop();
@@ -248,7 +215,7 @@ void Graph::tsort_kahn() {
 	}
 }
 
-int Graph::count_simple_paths(int s, int t) {
+int DirectedGraph::count_simple_paths(int s, int t) {
 	int	x, y;
 	vector<int> B = indeg;
 	queue<int> Q;
@@ -257,6 +224,7 @@ int Graph::count_simple_paths(int s, int t) {
 	for (int i = 0; i < indeg.size(); i++)
 		if (indeg[i] == 0)
 			Q.push(i);
+			
 	while (!Q.empty()) {
 		int u = Q.front();
 		Q.pop();
@@ -269,6 +237,7 @@ int Graph::count_simple_paths(int s, int t) {
 			if (--indeg[v] == 0)
 				Q.push(v);
 	}
+
 	indeg = B;
 	if (sorted.size() != indeg.size())
 		__throw_logic_error("The graph contains cycle.");
@@ -283,12 +252,11 @@ int Graph::count_simple_paths(int s, int t) {
 	return paths[s];
 }
 
-void Graph::ssc_kosaraju() {
-	vector<int> visited(A.size());
+void DirectedGraph::ssc_kosaraju() {
+	vector<int> visited(A.size(), 0);
 	vector<int> finished;
 	stack<int> S;
-	for (int i = 0; i < A.size(); i++)
-		visited[i] = 0;
+
 	for (int i = 0; i < A.size(); i++) {
 		if (visited[i] == 0) {
 			visited[i] = 1;
@@ -311,12 +279,12 @@ void Graph::ssc_kosaraju() {
 
 	vector<list<int>> C;
 	vector<list<int>> T(A.size());
-	for (int i = 0; i < A.size(); i++) {
-		visited[i] = 0;
+	for (int i = 0; i < A.size(); i++)
 		for (auto j: A[i])
 			T[j].push_back(i);
-	}
-	for (int i = A.size()-1; i >= 0; i--) {
+	fill(visited.begin(), visited.end(), 0);
+
+	for (int i = A.size() - 1; i >= 0; i--) {
 		int x = finished[i];
 		if (visited[x] == 1)
 			continue;
@@ -347,7 +315,7 @@ void Graph::ssc_kosaraju() {
 	}
 }
 
-void Graph::ssc_tarjan() {
+void DirectedGraph::ssc_tarjan() {
 	stack<int> S;
 	int id = 0;
 	vector<int> index(A.size(), -1);
@@ -371,7 +339,7 @@ void Graph::ssc_tarjan() {
 	}
 }
 
-void Graph::strong_connect(int u, int& id, stack<int>& S, vector<int>& index, vector<int>& lowlink, vector<int>& onstack) {
+void DirectedGraph::strong_connect(int u, int& id, stack<int>& S, vector<int>& index, vector<int>& lowlink, vector<int>& onstack) {
 	S.push(u);
 	onstack[u] = 1;
 	index[u] = lowlink[u] = id++;
@@ -395,7 +363,7 @@ void Graph::strong_connect(int u, int& id, stack<int>& S, vector<int>& index, ve
 	}
 }
 
-void Graph::euler_tour() {
+void DirectedGraph::euler_tour() {
 	for (int i = 0; i < A.size(); i++) {
 		if (indeg[i] != A[i].size()) {
 			cout << "All vertices must have even degree." << endl;
@@ -416,15 +384,17 @@ void Graph::euler_tour() {
 	A = B;
 }
 
-void Graph::reachability() {	
+void DirectedGraph::reachability() {	
 	vector<list<int>> T(A.size());
 	vector<int> minreach(A.size());
 	vector<pair<int,int>> label(A.size());
+
 	for (int i = 0; i < A.size(); i++) {
 		minreach[i] = -1;
 		for (auto j: A[i])
 			T[j].push_back(i);
 	}
+
 	int d = 1;
 	cout << "Labels: ";
 	for (int i = 0; i < A.size(); i++) {
@@ -433,6 +403,7 @@ void Graph::reachability() {
 		d = max(d, label[i].first/10 + 1);
 	}
 	radix_sort(label, d);
+
 	for (int i = 0; i < A.size(); i++) {
 		int u = label[i].second;
 		if (minreach[u] == -1)
@@ -441,13 +412,14 @@ void Graph::reachability() {
 			if (minreach[v] == -1)
 				minreach[v] = minreach[u];
 	}
+
 	cout << "Min Reach: ";
 	for (int i = 0; i < A.size(); i++)
 		cout << minreach[i] << " ";
 	cout << endl;
 }
 
-void Graph::radix_sort(vector<pair<int,int>>& A, int d) {
+void DirectedGraph::radix_sort(vector<pair<int,int>>& A, int d) {
 	int i, j, k = 10, n = A.size();
 	vector<pair<int,int>> B(n);
 
@@ -482,7 +454,7 @@ void Graph::radix_sort(vector<pair<int,int>>& A, int d) {
 			A[i] = B[i];
 }
 
-void Graph::transpose() {
+void DirectedGraph::transpose() {
 	vector<list<int>> T(A.size());
 	for (int i = 0; i < A.size(); i++) {
 		indeg[i] = A[i].size();
@@ -492,10 +464,11 @@ void Graph::transpose() {
 	A = T;
 }
 
-void Graph::simplify() {
+void DirectedGraph::simplify() {
 	vector<list<int>> S(A.size());
 	vector<int> visited(A.size(), -1);
 	fill(indeg.begin(), indeg.end(), 0);
+
 	for (int i = 0; i < A.size(); i++) {
 		for (auto j: A[i]) {
 			if (visited[j] != i && j != i) {
@@ -508,10 +481,11 @@ void Graph::simplify() {
 	A = S;
 }
 
-void Graph::square() {
+void DirectedGraph::square() {
 	vector<list<int>> S(A.size());
 	vector<int> visited(A.size(), -1);
 	fill(indeg.begin(), indeg.end(), 0);
+
 	for (int i = 0; i < A.size(); i++) {
 		for (auto j: A[i]) {
 			if (visited[j] == i)
@@ -531,67 +505,10 @@ void Graph::square() {
 	A = S;
 }
 
-int Graph::universal_sink() {
+int DirectedGraph::universal_sink() {
 	for (int i = 0; i < A.size(); i++) {
 		if (indeg[i] == A.size() - 1 && A[i].size() == 0)
 			return i;
 	}
 	return -1;
-}
-
-int main() {
-	int m, n;
-	char op;
-	cout << "Number of Vertices: ";
-	cin >> n;
-	Graph G(n);
-	cout << "Edges: " << endl;
-	while (cin >> G);
-	cin.clear();
-	clearerr(stdin);
-
-	cout << "Choose an operation (b/c/d/D/e/k/K/n/p/r/s/S/t/T/u): ";
-	while (cin >> op) {		
-		if (op == 'b') {
-			cout << "Source: ";
-			cin >> m;
-			G.bfs(m);
-		} else if (op == 'c') {
-			cout << "Enter the two vertices: ";
-			cin >> m >> n;
-			cout << G.count_simple_paths(m, n) << endl;
-		} else if (op == 'd') {
-			G.dfs();
-		} else if (op == 'D') {
-			G.dfs_edges();
-		} else if (op == 'e') {
-			G.euler_tour();
-		} else if (op == 'k') {
-			G.tsort_kahn();
-		} else if (op == 'K') {
-			G.ssc_kosaraju();
-		} else if (op == 'n') {
-			G.transpose();
-		} else if (op == 'p') {
-			cout << G;
-		} else if (op == 'r') {
-			G.reachability();
-		} else if (op == 's') {
-			G.simplify();
-		} else if (op == 'S') {
-			G.square();
-		} else if (op == 't') {
-			G.tsort_dfs();
-		} else if (op == 'T') {
-			G.ssc_tarjan();
-		} else if (op == 'u') {
-			m = G.universal_sink();
-			if (m != -1)
-				cout << m << endl;
-		} else cout << "Invalid response." << endl;
-		cout << "Choose an operation (b/c/d/D/e/k/K/n/p/r/s/S/t/T/u): ";
-	}
-	cout << endl;
-
-	return 0;
 }

@@ -1,8 +1,6 @@
+#pragma once
 #include <iostream>
 using namespace std;
-
-static const int RED = 0;
-static const int BLACK = 1;
 
 template <class T>
 class RedBlackTreeNode {
@@ -18,6 +16,7 @@ template <class T>
 class RedBlackTree {
 	public:
 		RedBlackTree();
+		~RedBlackTree();
 		void insert_key(T k);
 		void delete_key(T k);
 		void inorder_walk();
@@ -37,13 +36,24 @@ class RedBlackTree {
 		void delete_fixup(RedBlackTreeNode<T> *x);
 		void inorder_traversal(RedBlackTreeNode<T> *x);
 		void postorder_traversal(RedBlackTreeNode<T> *x);
+		void postorder_deletion(RedBlackTreeNode<T> *x);
 };
+
+static const int RED = 0;
+static const int BLACK = 1;
 
 template <class T>
 RedBlackTree<T>::RedBlackTree() {
 	NIL = new RedBlackTreeNode<T>;
 	NIL->color = BLACK;
 	root = NIL;
+}
+
+template<class T>
+RedBlackTree<T>::~RedBlackTree() {
+	if (root != NIL)
+		postorder_deletion(root);
+	delete NIL;
 }
 
 template <class T>
@@ -227,7 +237,7 @@ template <class T>
 void RedBlackTree<T>::delete_key(T k) {
 	RedBlackTreeNode<T> *x, *y, *z = search_key(k);
 	if (z == NIL)
-		return;
+		__throw_logic_error("Key not found.");
 	y = z;
 	int ycolor = y->color;
 	if (z->left == NIL) {
@@ -252,6 +262,7 @@ void RedBlackTree<T>::delete_key(T k) {
 		y->left->parent = y;
 		y->color = z->color;
 	}
+	delete z;
 	if (ycolor == BLACK)
 		delete_fixup(x);
 }
@@ -365,29 +376,11 @@ void RedBlackTree<T>::postorder_traversal(RedBlackTreeNode<T> *node) {
 		cout << "(B) ";
 }
 
-int main() {
-	RedBlackTree<int> T;
-	char op;
-	int num;
-
-	cout << "Choose an operation (i/I/D/P): ";
-	while (cin >> op) {		
-		if (op == 'i') {
-			T.inorder_walk();
-		} else if (op == 'I') {
-			cout << "Enter the key: ";
-			cin >> num;
-			T.insert_key(num);
-		} else if (op == 'D') {
-			cout << "Enter the key: ";
-			cin >> num;
-			T.delete_key(num);
-		} else if (op == 'P') {
-			T.postorder_walk();
-		} else cout << "Invalid response." << endl;
-		cout << "Choose an operation (i/I/D/P): ";
-	}
-	cout << endl;
-
-	return 0;
+template <class T>
+void RedBlackTree<T>::postorder_deletion(RedBlackTreeNode<T> *node) {
+	if (node->left != NIL) 
+		postorder_deletion(node->left);
+	if (node->right != NIL) 
+		postorder_deletion(node->right);
+	delete node;
 }
