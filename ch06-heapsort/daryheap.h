@@ -10,7 +10,7 @@ class MaxHeap {
 		int size();
 		vector<int> sort();
 		int extract_max();
-		void increase_key(int i, int k);
+		void increase_key(int k, int i);
 		void insert(int k);
 	private:
 		vector<int> A;

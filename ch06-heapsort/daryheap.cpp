@@ -62,7 +62,7 @@ int MaxHeap::extract_max() {
 	return max;
 }
 
-void MaxHeap::increase_key(int i, int k) {
+void MaxHeap::increase_key(int k, int i) {
 	if (i < 0 || s <= i)
 		__throw_out_of_range("Invalid index.");
 	if (k < A[i])
@@ -76,5 +76,5 @@ void MaxHeap::increase_key(int i, int k) {
 
 void MaxHeap::insert(int k) {
 	A.push_back(INT_MIN);
-	increase_key(s++, k);
+	increase_key(k, s++);
 }

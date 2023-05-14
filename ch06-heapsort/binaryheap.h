@@ -8,13 +8,13 @@ class MinHeap {
 		MinHeap(vector<pair<int,int>> D);
 		int size();
 		bool empty();
-		int peek(int u);
+		int peek(int v);
 		pair<int,int> pop();
-		void update(int v, int k);
+		void update(int k, int v);
 	private:
 		vector<pair<int,int>> A;
 		unordered_map<int,int> M;
 		void heapify(int i);
 		void build_min_heap();
-		void decrease_key(int i, int k);
+		void decrease_key(int k, int i);
 };

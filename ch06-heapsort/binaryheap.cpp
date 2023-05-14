@@ -35,10 +35,10 @@ bool MinHeap::empty() {
 	return A.empty();
 }
 
-int MinHeap::peek(int u) {
-	if (M.find(u) == M.end())
+int MinHeap::peek(int v) {
+	if (M.find(v) == M.end())
 		__throw_invalid_argument("Value not in heap.");
-	return A[M.at(u)].first;
+	return A[M[v]].first;
 }
 
 pair<int,int> MinHeap::pop() {
@@ -53,7 +53,7 @@ pair<int,int> MinHeap::pop() {
 	return max;
 }
 
-void MinHeap::decrease_key(int i, int k) {
+void MinHeap::decrease_key(int k, int i) {
 	if (k >= A[i].first)
 		__throw_logic_error("New key should be smaller than the current key.");
 	A[i].first = k;
@@ -64,8 +64,8 @@ void MinHeap::decrease_key(int i, int k) {
 	}
 }
 
-void MinHeap::update(int u, int k) {
-	if (M.find(u) == M.end())
+void MinHeap::update(int k, int v) {
+	if (M.find(v) == M.end())
 		__throw_invalid_argument("Value not in heap.");
-	decrease_key(M[u], k);
+	decrease_key(k, M[v]);
 }

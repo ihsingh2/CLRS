@@ -1,6 +1,7 @@
 #include <stack>
 #include <climits>
 #include "weighted_directed_graph.h"
+#include "../ch06-heapsort/binaryheap.h"
 
 struct edge {
 	int u;
@@ -60,7 +61,7 @@ void WeightedDirectedGraph::bellman_ford(int s) {
 	}
 
 	for (int j = 0; j < A.size(); j++)
-		for (pair<int,int> e: A[j])
+		for (pair<int,int> e : A[j])
 			if (distance[e.first] > distance[j] + e.second)
 				return negative_cycle(pred, e.first);
 
@@ -194,5 +195,136 @@ void WeightedDirectedGraph::tsort_shortest_path(int s) {
 	cout << endl;
 }
 
-void WeightedDirectedGraph::djikstra(int s) {
+void WeightedDirectedGraph::dijkstra(int s) {
+	vector<int> distance(A.size(), INT_MAX);
+	vector<int> inqueue(A.size(), 1);
+	vector<int> pred(A.size(), -1);
+	vector<pair<int,int>> keys(A.size());
+	for (int i = 0; i < A.size(); i++)
+		keys[i] = make_pair(INT_MAX, i);
+	keys[s].first = 0;
+	MinHeap Q(keys);
+
+	while (!Q.empty()) {
+		pair<int,int> m = Q.pop();
+		int u = m.second;
+		distance[u] = m.first;
+		inqueue[u] = 0;
+		if (distance[u] == INT_MAX)
+			break;
+
+		for (pair<int,int> e : A[u]) {
+			if (inqueue[e.first]) {
+				if (Q.peek(e.first) > distance[u] + e.second) {
+					Q.update(distance[u] + e.second, e.first);
+					pred[e.first] = u;
+				}
+			}
+		}
+	}
+
+	cout << "Distance: ";
+	for (int i = 0; i < A.size(); i++) {
+		if (distance[i] == INT_MAX)
+			cout << ". ";
+		else
+			cout << distance[i] << " ";
+	}
+	cout << endl << "Predecessor: ";
+	for (int i = 0; i < A.size(); i++) {
+		if (pred[i] == -1)
+			cout << ". ";
+		else
+			cout << pred[i] << " ";
+	}
+	cout << endl;
+}
+
+void WeightedDirectedGraph::johnson() {
+	vector<list<pair<int,int>>> B = A;
+	list<pair<int,int>> S;
+	for (int i = 0; i < A.size(); i++)
+		S.push_back(make_pair(i, 0));
+	B.push_back(S);
+
+	vector<int> distance(A.size(), INT_MAX);
+	vector<int> pred(A.size(), -1);
+	distance[A.size()] = 0;
+
+	for (int i = 1; i < B.size(); i++) {
+		for (int j = 0; j < B.size(); j++) {
+			if (distance[j] == INT_MAX)
+				continue;
+			for (pair<int,int> e: B[j]) {
+				if (distance[e.first] > distance[j] + e.second) {
+					distance[e.first] = distance[j] + e.second;
+					pred[e.first] = j;
+				}
+			}
+		}
+	}
+
+	for (int j = 0; j < B.size(); j++)
+		for (pair<int,int> e : B[j])
+			if (distance[e.first] > distance[j] + e.second)
+				return negative_cycle(pred, e.first);
+
+	for (int i = 0; i < A.size(); i++)
+		for (pair<int,int> &e : B[i])
+			e.second += distance[i] - distance[e.first];
+
+	vector<vector<int>> D(A.size(), vector<int> (A.size(), INT_MAX));
+	vector<vector<int>> P(A.size(), vector<int> (A.size(), -1));
+
+	for (int i = 0; i < A.size(); i++) {
+		vector<int> inqueue(A.size(), 1);	
+		vector<pair<int,int>> keys(A.size());
+		for (int j = 0; j < A.size(); j++)
+			keys[j] = make_pair(INT_MAX, j);
+		keys[i].first = 0;
+		MinHeap Q(keys);
+
+		while (!Q.empty()) {
+			pair<int,int> m = Q.pop();
+			int u = m.second;
+			D[i][u] = m.first;
+			inqueue[u] = 0;
+			if (D[i][u] == INT_MAX)
+				break;
+
+			for (pair<int,int> e : B[u]) {
+				if (inqueue[e.first]) {
+					if (Q.peek(e.first) > D[i][u] + e.second) {
+						Q.update(D[i][u] + e.second, e.first);
+						P[i][e.first] = u;
+					}
+				}
+			}
+		}
+
+		for (int j = 0; j < A.size(); j++)
+			if (D[i][j] != INT_MAX)
+				D[i][j] += distance[j] - distance[i];
+	}
+	
+	cout << "Distance: " << endl;
+	for (int i = 0; i < A.size(); i++) {
+		for (int j = 0; j < A.size(); j++) {
+			if (D[i][j] == INT_MAX)
+				cout << ". ";
+			else
+				cout << D[i][j] << " ";
+		}
+		cout << endl;
+	}
+	cout << "Predecessor: " << endl;
+	for (int i = 0; i < A.size(); i++) {
+		for (int j = 0; j < A.size(); j++) {
+			if (P[i][j] == -1)
+				cout << ". ";
+			else
+				cout << P[i][j] << " ";
+		}
+		cout << endl;
+	}
 }

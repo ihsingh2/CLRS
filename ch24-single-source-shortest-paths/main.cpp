@@ -13,7 +13,7 @@ int main() {
 	cin.clear();
 	clearerr(stdin);
 
-	cout << "Choose an operation (b/d/i/p/t): ";
+	cout << "Choose an operation (b/d/i/j/p/t): ";
 	while (cin >> op) {
 
 		if (op == 'b') {
@@ -28,7 +28,7 @@ int main() {
 		else if (op == 'd') {
 			cout << "Source: ";
 			cin >> n;
-			G.djikstra(n);
+			G.dijkstra(n);
 		} 
 		else if (op == 'i') {
 			try {
@@ -36,7 +36,9 @@ int main() {
 			} catch (logic_error e) {
 				cout << e.what() << endl;
 			}
-		} 
+		}
+		else if (op == 'j')
+			G.johnson();
 		else if (op == 'p')
 			cout << G;
 		else if (op == 't') {
@@ -47,11 +49,11 @@ int main() {
 			} catch (logic_error e) {
 				cout << e.what() << endl;
 			}
-		} 
+		}
 		else 
 			cout << "Invalid response." << endl;
 
-		cout << "Choose an operation (b/d/i/p/t): ";
+		cout << "Choose an operation (b/d/i/j/p/t): ";
 	}
 	cout << endl;
 

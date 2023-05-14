@@ -1,4 +1,5 @@
 #pragma once
+#include <vector>
 #include <iostream>
 #include <unordered_map>
 using namespace std;
@@ -29,6 +30,8 @@ class FibHeap {
 	friend ostream& operator<<(ostream& out, const FibHeap& H);
 	public:
 		FibHeap();
+		FibHeap(vector<pair<int,int>> D);
+		~FibHeap();
 		int size();
 		int peek(int v);
 		void insert(int k, int v);

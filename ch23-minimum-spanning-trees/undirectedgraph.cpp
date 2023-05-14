@@ -100,7 +100,7 @@ void UndirectedGraph::prim(int r) {
 		for (pair<int,int> e: A[u.second]) {
 			if (inqueue[e.first] == 1 && Q.peek(e.first) > e.second) {
 				pred[e.first] = u.second;
-				Q.update(e.first, e.second);
+				Q.update(e.second, e.first);
 			}
 		}
 	}

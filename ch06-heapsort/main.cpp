@@ -111,12 +111,12 @@ int main() {
 					cout << endl;
 			}
 			else if (op == 'u') {
-				cout << "Index: ";
-				cin >> i;
 				cout << "Key: ";
 				cin >> k;
+				cout << "Index: ";
+				cin >> i;
 				try {
-					H.increase_key(i, k);
+					H.increase_key(k, i);
 				} catch (logic_error e) {
 					cerr << e.what() << endl;
 				}

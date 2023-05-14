@@ -12,7 +12,8 @@ class WeightedDirectedGraph {
 		void bellman_ford(int s);
 		void minimum_incoming_path();
 		void tsort_shortest_path(int s);
-		void djikstra(int s);
+		void dijkstra(int s);
+		void johnson();
 	private:
 		vector<list<pair<int,int>>> A;
 		void negative_cycle(vector<int> &pred, int v);

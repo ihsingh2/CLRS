@@ -1,6 +1,5 @@
 #include <cmath>
 #include <climits>
-#include <vector>
 #include "fibheap.h"
 
 ostream& operator<<(ostream& out, const FibHeap& H) {
@@ -18,6 +17,19 @@ FibHeap::FibHeap() {
 	n = 0;
 	log2_gr = log2(1.62);
 	min = nullptr;
+}
+
+FibHeap::FibHeap(vector<pair<int,int>> D) {
+	n = 0;
+	log2_gr = log2(1.62);
+	min = nullptr;
+	for (int i = 0; i < D.size(); i++)
+		insert(D[i].first, D[i].second);
+}
+
+FibHeap::~FibHeap() {
+	for (auto x : M)
+		delete x.second;
 }
 
 int FibHeap::size() {
@@ -48,10 +60,14 @@ int FibHeap::peek(int v) {
 }
 
 void FibHeap::insert(int k, int v) {
-	FibHeapNode *x = new FibHeapNode(k, v);
-	M[v] = x;
-	add_to_root_list(x);
-	n++;
+	if (M.find(v) == M.end()) {
+		FibHeapNode *x = new FibHeapNode(k, v);
+		M[v] = x;
+		add_to_root_list(x);
+		n++;
+	}
+	else
+		update(k, v);
 }
 
 pair<int,int> FibHeap::minimum() {
